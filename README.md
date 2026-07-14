@@ -16,7 +16,6 @@ The goal was never to build something groundbreaking. It was to force myself thr
 
 CyberRecon-Pro is the result of that — a tool that scans and analyzes a system/network environment and displays the gathered information through a simple web interface.
 
----
 
 ## 2. My Learning Experience
 
