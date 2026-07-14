@@ -4,7 +4,6 @@ A reconnaissance and system-analysis platform I built to understand how informat
 
 This is my first practical cybersecurity project, built end to end — frontend, backend, and the logic connecting them.
 
----
 
 ## 1. Project Overview
 
