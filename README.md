@@ -1,117 +1,93 @@
 # CyberRecon-Pro
 
-A reconnaissance and system-analysis platform I built to understand how information about a device and its connected network can be collected, processed, and presented in a clear, usable way.
-
-This is my first practical cybersecurity project, built end to end — frontend, backend, and the logic connecting them.
-
-
-## 1. Project Overview
-
-CyberRecon-Pro started as a simple question I kept asking myself while learning cybersecurity: *how do the tools I keep reading about actually work under the hood?*
-
-Reading about reconnaissance, network analysis, and system fingerprinting is one thing. Building something that actually does it is a completely different level of understanding. So I decided to stop just studying the theory and build a real platform that performs this kind of information gathering and analysis, from scratch.
-
-The goal was never to build something groundbreaking. It was to force myself through the full process — deciding what data to collect, figuring out how to collect it safely and accurately, structuring a backend to process it, and building a frontend that actually presents it in a way that makes sense. I wanted a project that would expose me to real problems, not tutorial-sized ones.
-
-CyberRecon-Pro is the result of that — a tool that scans and analyzes a system/network environment and displays the gathered information through a simple web interface.
-
-
-## 2. My Learning Experience
-
-This was my **first hands-on cybersecurity project**, and I'll be honest — it did not go smoothly the whole way through, and I think that's exactly why it was worth doing.
-
-**Testing environment:**
-I tested everything on my own laptop, using my own local network as the first target environment. This was intentional. I wanted a controlled, honest space to understand how system and network information gets collected before I ever thought about pointing something like this at anything else. My own device gave me instant feedback — I could compare what the tool reported against what I already knew was true about my machine and network, which made debugging a lot more grounded.
-
-**Challenges I ran into:**
-- Getting the frontend and backend to actually talk to each other correctly took longer than I expected — small mismatches in ports, requests, and responses caused a lot of quiet failures early on.
-- Writing Python for security-related data collection meant dealing with permissions, inconsistent outputs, and edge cases I hadn't planned for.
-- Structuring the backend logic so it stayed readable as I added more features was a constant balancing act.
-- Debugging silent failures (where nothing crashes, but nothing works right either) taught me to actually slow down and verify each layer instead of assuming.
-
-**What I took away from it:**
-- A much clearer picture of how frontend and backend components communicate in a real application.
-- Practical Python backend development, beyond isolated scripts.
-- A working understanding of how security-related information gathering is actually implemented, not just described.
-- Better debugging habits — checking assumptions at every layer instead of just the obvious one.
-- Confidence that I can take an idea, break it down, and actually build it.
-
-This project isn't perfect, and I don't want it to look like it is. It's a genuine first step, and I plan to keep improving it as I learn more.
+A reconnaissance and network analysis dashboard built as my first practical cybersecurity project.
 
 ---
 
-## 3. Features
+## Project Overview
 
-- **System information gathering** — collects details about the local device (OS, hardware, network configuration) for analysis.
-- **Network device discovery** — identifies devices connected within the local network environment.
-- **Basic port and service insight** — surfaces open ports and running services for a clearer picture of exposure.
-- **Structured data output** — organizes collected data instead of dumping raw, unreadable results.
-- **Web-based dashboard** — presents scan results through a simple, readable frontend rather than a terminal-only output.
-- **Backend-driven processing** — all scanning and analysis logic runs through a dedicated Python backend, separate from the presentation layer.
-- **Local-first design** — built and tested to run entirely on a local machine/network, keeping it safe for learning and experimentation.
+CyberRecon-Pro is a web-based tool that scans a target system or network, checks open/closed ports, discovers connected devices, and displays the results on a dashboard with basic risk scoring.
+
+I built this project to move past just reading about cybersecurity concepts and actually implement one myself. Instead of following a tutorial step by step, I wanted to design and build something on my own — from the scanning logic in the backend to the dashboard that displays the results.
 
 ---
 
-## 4. Technologies Used
+## Objective
 
-**Frontend**
-- HTML, CSS, JavaScript
-- Served locally as a lightweight static frontend
+I built this project for a few reasons:
 
-**Backend**
-- Python
-- Local backend server handling scanning, data processing, and API responses
+- To apply the cybersecurity concepts I had been learning in a real, working project instead of just theory.
+- To understand how a frontend and backend actually communicate with each other in a live application.
+- To practice Python for backend development, specifically for tasks like port scanning and network discovery.
+- To get comfortable with the full process of building something — planning it, writing the code, testing it, and fixing what breaks.
 
-**Other**
-- Local networking concepts (sockets, requests, device/network scanning)
-- Git & GitHub for version control
+Through building it, I learned a lot about how reconnaissance tools work internally, how to structure a backend so it stays manageable as features are added, and how much time debugging actually takes compared to writing the initial code.
 
 ---
 
-## 5. How It Works
+## Features
 
-The idea behind CyberRecon-Pro is simple, even if the implementation took some work to get right:
-
-1. **You start the backend.** The Python backend initializes and prepares to handle scan and analysis requests.
-2. **You start the frontend.** A lightweight local server hosts the dashboard interface in your browser.
-3. **The frontend sends a request to the backend.** When you trigger a scan/analysis from the dashboard, the frontend communicates with the backend over local HTTP.
-4. **The backend does the actual work.** It gathers system and network information, processes it, and structures the results.
-5. **Results are sent back and displayed.** The frontend receives the processed data and renders it in a readable format on the dashboard.
-
-In short: the frontend is the face of the project, and the Python backend is where all the real reconnaissance and analysis logic lives.
+- **Overview dashboard** — shows a summary of the last scan, including last target, resolved IP, open/closed ports, scan duration, and an overall risk score.
+- **System resource monitoring** — displays live CPU usage, RAM usage, and packets sent/received during scans.
+- **Scan Console** — lets you enter a target IP, choose a scan type (e.g. quick scan), and watch scan progress through a live terminal-style log.
+- **Port results table** — lists scanned ports with their service name, state (open/closed), risk level, and version info where available.
+- **Network Discovery** — performs a ping-sweep across a subnet to find live devices, showing their IP, hostname, and MAC address.
+- **Analytics page** — visual breakdown of scan data, including open vs closed ports, risk level distribution, top services found, and scan duration history.
+- **Scan History** — keeps a searchable log of past scans with date, target, scan type, duration, open ports, and risk score, along with options to export results.
+- **Security Intelligence reference** — a built-in table of common ports and services with their associated risk level and a short explanation of why each one matters. This is also used internally to auto-classify scan findings.
 
 ---
 
-## 6. Installation & Setup
+## How It Works
 
-Follow these steps to run CyberRecon-Pro locally.
+The project follows a simple frontend-backend structure:
 
-### Step 1 — Clone the repository
+1. The user interacts with the frontend (dashboard) — for example, entering a target IP and starting a scan.
+2. The frontend sends that request to the backend over HTTP.
+3. The backend (written in Python) processes the request — running the scan, checking ports, gathering network information, and calculating risk levels.
+4. The backend sends the results back to the frontend.
+5. The frontend displays the results on the dashboard — in tables, charts, and the live scan log.
+
+---
+
+## Technologies Used
+
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python
+- **Other tools:** Local HTTP server (`http.server`) for serving the frontend, Git and GitHub for version control
+
+---
+
+## Installation & Running the Project
+
+Follow these steps to run CyberRecon-Pro on your own machine.
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/CyberRecon-Pro.git
 cd CyberRecon-Pro
 ```
 
-### Step 2 — Start the Frontend
+### 2. Start the frontend
 
-Open a terminal, navigate to the frontend folder, and run:
+Open a terminal, then run:
 
 ```bash
 cd frontend
 py -m http.server 5500
 ```
 
-### Step 3 — Start the Backend
+### 3. Start the backend
 
-Open a **second** terminal, navigate to the backend folder, and run:
+Open a second terminal, then run:
 
 ```bash
 cd backend
 py app.py
 ```
 
-### Step 4 — Access the application
+### 4. Open the application
 
 Once both servers are running, open your browser and go to:
 
@@ -119,12 +95,35 @@ Once both servers are running, open your browser and go to:
 http://127.0.0.1:5500
 ```
 
-> Make sure both the frontend and backend servers are running at the same time — the dashboard depends on the backend being active to fetch and display scan results.
+Note: both the frontend and backend need to be running at the same time for the dashboard to work properly.
 
 ---
 
-## Final Note
 
-CyberRecon-Pro is a project I built for myself, to learn by doing rather than just reading. It's not meant to be a finished, polished product — it's a snapshot of where I started in cybersecurity and how I taught myself to build something real. I plan to keep expanding it as I pick up new skills.
+## Learning Experience
 
-If you're going through the same learning process, feel free to explore the code, break it, fix it, and make it your own.
+This was my first practical cybersecurity project, and it was not a smooth process from start to finish.
+
+I ran into several issues along the way — getting the frontend and backend to communicate correctly took a few attempts, and I had to deal with unexpected outputs and errors in the Python scanning logic. There were times where nothing crashed, but the results were still wrong, which forced me to slow down and actually trace through each part of the code to find the issue.
+
+Testing everything on my own laptop and local network helped a lot, since I could compare the scan results against what I already knew about my own setup. This made debugging more grounded and helped me understand what the tool was actually doing at each step, not just what it was supposed to do.
+
+By the end of it, I had a much better understanding of how frontend and backend components connect, how to structure a Python backend, and how to debug issues methodically instead of guessing. This project also gave me the confidence to keep building more cybersecurity-related tools going forward.
+
+---
+
+## Future Improvements
+
+This project is still a work in progress, and there are several things I plan to improve:
+
+- Adding more scan types and more detailed port/service analysis.
+- Improving the accuracy of risk scoring.
+- Expanding network discovery to show more device information.
+- Cleaning up and optimizing the backend code as I learn better practices.
+- Adding proper error handling for edge cases I haven't covered yet.
+
+---
+
+## Conclusion
+
+CyberRecon-Pro represents where I currently am in my cybersecurity learning journey — not a finished product, but a genuine attempt at applying what I've learned in a working project. Building it taught me more than I expected, and I plan to keep learning and building on top of it as I continue improving my skills.
