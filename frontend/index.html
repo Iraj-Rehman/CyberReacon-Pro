@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CyberRecon Pro — Reconnaissance Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="particles"></div>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span class="brand-text">CyberRecon<span class="accent">Pro</span></span>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-tab="overview"><i class="fa-solid fa-gauge-high"></i><span>Overview</span></button>
+      <button class="nav-item" data-tab="scan"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Scan Console</span></button>
+      <button class="nav-item" data-tab="discovery"><i class="fa-solid fa-network-wired"></i><span>Network Discovery</span></button>
+      <button class="nav-item" data-tab="analytics"><i class="fa-solid fa-chart-pie"></i><span>Analytics</span></button>
+      <button class="nav-item" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i><span>Scan History</span></button>
+      <button class="nav-item" data-tab="intel"><i class="fa-solid fa-triangle-exclamation"></i><span>Security Intel</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="status-pill">
+        <span class="dot pulse"></span> Backend Online
+      </div>
+      <div class="version">v1.0.0</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="icon-btn" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-title">
+        <h1 id="pageTitle">Overview</h1>
+        <span class="topbar-sub" id="pageSub">Real-time reconnaissance summary</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn" id="fullscreenToggle" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+      </div>
+    </header>
+
+    <!-- OVERVIEW TAB -->
+    <section class="tab-panel active" id="tab-overview">
+      <div class="stats-grid" id="heroStats"></div>
+
+      <div class="widgets-grid">
+        <div class="glass widget">
+          <div class="widget-head"><i class="fa-solid fa-microchip"></i> CPU Usage</div>
+          <div class="widget-value" id="cpuValue">--%</div>
+          <div class="bar"><div class="bar-fill" id="cpuBar"></div></div>
+        </div>
+        <div class="glass widget">
+          <div class="widget-head"><i class="fa-solid fa-memory"></i> RAM Usage</div>
+          <div class="widget-value" id="ramValue">--%</div>
+          <div class="bar"><div class="bar-fill" id="ramBar"></div></div>
+        </div>
+        <div class="glass widget">
+          <div class="widget-head"><i class="fa-solid fa-arrow-up-from-bracket"></i> Packets Sent</div>
+          <div class="widget-value" id="packetsSent">--</div>
+        </div>
+        <div class="glass widget">
+          <div class="widget-head"><i class="fa-solid fa-arrow-down-to-bracket"></i> Packets Received</div>
+          <div class="widget-value" id="packetsRecv">--</div>
+        </div>
+      </div>
+
+      <div class="glass panel">
+        <div class="panel-head"><i class="fa-solid fa-terminal"></i> Recent Activity</div>
+        <div id="recentActivity" class="empty-state">No scans yet. Head to Scan Console to start.</div>
+      </div>
+    </section>
+
+    <!-- SCAN TAB -->
+    <section class="tab-panel" id="tab-scan">
+      <div class="glass panel">
+        <div class="panel-head"><i class="fa-solid fa-crosshairs"></i> Scan Configuration</div>
+        <div class="scan-form-grid">
+          <input type="text" id="targetInput" placeholder="Target IP or hostname, e.g. scanme.nmap.org" />
+          <select id="scanTypeSelect">
+            <option value="quick">Quick Scan</option>
+            <option value="full">Full Scan</option>
+            <option value="custom">Custom Ports</option>
+          </select>
+          <input type="text" id="customPortsInput" placeholder="e.g. 20-25,80,443" style="display:none" />
+          <button class="btn-primary" id="startScanBtn"><i class="fa-solid fa-play"></i> Start Scan</button>
+          <button class="btn-ghost" id="stopScanBtn" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="scanProgress"></div></div>
+          <span id="scanProgressLabel">Idle</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="glass panel terminal-panel">
+          <div class="panel-head"><i class="fa-solid fa-terminal"></i> Live Terminal</div>
+          <div class="terminal" id="terminal"><div class="term-line">$ waiting for scan...</div></div>
+        </div>
+
+        <div class="glass panel">
+          <div class="panel-head"><i class="fa-solid fa-list"></i> Port Results</div>
+          <div class="table-tools">
+            <input type="text" id="portSearch" placeholder="Search port or service..." />
+            <select id="riskFilter">
+              <option value="all">All Risk Levels</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Port</th><th>Service</th><th>State</th><th>Risk</th><th>Version</th></tr></thead>
+              <tbody id="portsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DISCOVERY TAB -->
+    <section class="tab-panel" id="tab-discovery">
+      <div class="glass panel">
+        <div class="panel-head"><i class="fa-solid fa-network-wired"></i> Network Discovery</div>
+        <p class="panel-note">Ping-sweep based discovery. Works best on your local subnet, no admin rights required.</p>
+        <div class="scan-form-grid">
+          <input type="text" id="cidrInput" placeholder="e.g. 192.168.1.0/24" />
+          <button class="btn-primary" id="discoverBtn"><i class="fa-solid fa-satellite-dish"></i> Discover Devices</button>
+        </div>
+      </div>
+      <div class="device-grid" id="deviceGrid"></div>
+    </section>
+
+    <!-- ANALYTICS TAB -->
+    <section class="tab-panel" id="tab-analytics">
+      <div class="charts-grid">
+        <div class="glass panel"><div class="panel-head">Open vs Closed Ports</div><canvas id="chartPortState"></canvas></div>
+        <div class="glass panel"><div class="panel-head">Risk Level Distribution</div><canvas id="chartRisk"></canvas></div>
+        <div class="glass panel"><div class="panel-head">Top Services Found</div><canvas id="chartServices"></canvas></div>
+        <div class="glass panel"><div class="panel-head">Scan Duration History</div><canvas id="chartDuration"></canvas></div>
+      </div>
+    </section>
+
+    <!-- HISTORY TAB -->
+    <section class="tab-panel" id="tab-history">
+      <div class="glass panel">
+        <div class="panel-head"><i class="fa-solid fa-clock-rotate-left"></i> Scan History</div>
+        <div class="table-tools">
+          <input type="text" id="historySearch" placeholder="Search by target..." />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Target</th><th>Type</th><th>Duration</th><th>Open Ports</th><th>Risk</th><th>Actions</th></tr></thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTEL TAB -->
+    <section class="tab-panel" id="tab-intel">
+      <div class="glass panel">
+        <div class="panel-head"><i class="fa-solid fa-triangle-exclamation"></i> Security Intelligence Reference</div>
+        <p class="panel-note">Common ports and why they matter — used to auto-classify every scan's findings.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Port</th><th>Service</th><th>Risk</th><th>Why it matters</th></tr></thead>
+            <tbody id="intelBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<button class="fab" id="fab"><i class="fa-solid fa-bolt"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
